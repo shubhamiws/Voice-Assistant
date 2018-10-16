@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e2ff4081"
+    android:keepScreenOn="true"
+    tools:context=".MicActivity">
+
+    <FrameLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/framess"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        tools:context="com.shazam.choreographerexample.FirstActivity">
+
+        <ai.api.ui.AIButton
+            android:id="@+id/micButton"
+            style="@style/ApiAi.Microphone"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center" />
+
+        <animation.audiolistener.FunkyView
+            android:id="@+id/microphoneButton"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/framess"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="__"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/textView2"
+        android:paddingTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="2dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:text="Start with - Hello \n ---------------------- \n Use 'SET'  \n along with your task name\n ---------------------- \n  Date format - 6 july \n ---------------------- \n  Time format - 6:30 a.m"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp" />
+
+
+</RelativeLayout>
