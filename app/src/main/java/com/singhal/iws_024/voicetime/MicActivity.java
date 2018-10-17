@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -54,7 +55,7 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
     String str_date_day = "", str_date_month = "", str_time_hr = "", str_time_minampm, str_time_ampm, str_time_min = "";
     String[] parts, parts2, parts4;
     int i, c, k, d, e;
-    int num_month = 1, num_day = 1, num_hr = 0, num_min = 0;
+    int num_month = 1, num_day = 1,day_return,moth_return, num_hr = 0, num_min = 0;
     String task_name;
     int status_code = 0;
     String str_task_name;
@@ -62,7 +63,10 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
     int ques_1, ques_2,ques_3,ques_4;
     String ans_1="",ans_2="",ans_3="",ans_4="";
 
+    int rep=0;
     Calendar localCalendar = Calendar.getInstance(TimeZone.getDefault());
+    int MY_PERMISSIONS_CONTACTS=2000;
+
 
     @SuppressLint("NewApi")
     @Override
@@ -80,7 +84,7 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         isNetworkAvailable();
-        CalenderPermission();
+
 
         textView = (TextView) findViewById(R.id.textView);
 
@@ -95,6 +99,7 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
         aiButton = (AIButton) findViewById(R.id.micButton);
         aiButton.initialize(config);
         aiButton.startListening();
+
         aiButton.onListeningFinished();
 
         aiButton.setResultsListener(new AIButton.AIButtonListener() {
@@ -113,6 +118,7 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
                             textView.setText("" + finaldata);
                             status_code++;
                             ans_ques(finaldata);
+                            rep=1;
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -140,7 +146,6 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
 
     }
 
-
     @SuppressLint("NewApi")
     public void ans_ques(final String finaldata) {
         // Start listen on open App and Match Hello
@@ -153,7 +158,7 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
 
         // SET Meeting
         if (status_code == 2) {
-            if ((this.finaldata.charAt(0) == 's' || this.finaldata.charAt(0) == 'S') && (this.finaldata.charAt(1)=='e' || this.finaldata.charAt(1)=='E')) {
+            if ((this.finaldata.charAt(0) == 's' || this.finaldata.charAt(0) == 'S') && (this.finaldata.charAt(1)=='e' || this.finaldata.charAt(1)=='E')&& (this.finaldata.charAt(2)=='t' || this.finaldata.charAt(2)=='T')) {
                 ans_2=finaldata;
                 speakques(status_code);
                 str_task_name = this.finaldata;
@@ -163,78 +168,63 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
         // Date 6 july
         if (status_code == 3) {
 
-            if (this.finaldata.charAt(0)=='a' || this.finaldata.charAt(0)=='b'
-                    ||this.finaldata.charAt(0)=='c' || this.finaldata.charAt(0)=='n'
-                    ||this.finaldata.charAt(0)=='d' || this.finaldata.charAt(0)=='o'
-                    ||this.finaldata.charAt(0)=='e' || this.finaldata.charAt(0)=='p'
-                    ||this.finaldata.charAt(0)=='f' || this.finaldata.charAt(0)=='q'
-                    ||this.finaldata.charAt(0)=='g' || this.finaldata.charAt(0)=='r'
-                    ||this.finaldata.charAt(0)=='h' || this.finaldata.charAt(0)=='s'
-                    ||this.finaldata.charAt(0)=='i' || this.finaldata.charAt(0)=='t'
-                    ||this.finaldata.charAt(0)=='j' || this.finaldata.charAt(0)=='u'
-                    ||this.finaldata.charAt(0)=='k' || this.finaldata.charAt(0)=='v'
-                    ||this.finaldata.charAt(0)=='l' || this.finaldata.charAt(0)=='w'
-                    ||this.finaldata.charAt(0)=='m' || this.finaldata.charAt(0)=='x'
-                    ||this.finaldata.charAt(0)=='y' || this.finaldata.charAt(0)=='z'
-                    ||this.finaldata.charAt(0)=='A' || this.finaldata.charAt(0)=='B'
-                    ||this.finaldata.charAt(0)=='C' || this.finaldata.charAt(0)=='O'
-                    ||this.finaldata.charAt(0)=='D' || this.finaldata.charAt(0)=='P'
-                    ||this.finaldata.charAt(0)=='E' || this.finaldata.charAt(0)=='Q'
-                    ||this.finaldata.charAt(0)=='F' || this.finaldata.charAt(0)=='R'
-                    ||this.finaldata.charAt(0)=='G' || this.finaldata.charAt(0)=='S'
-                    ||this.finaldata.charAt(0)=='H' || this.finaldata.charAt(0)=='T'
-                    ||this.finaldata.charAt(0)=='I' || this.finaldata.charAt(0)=='U'
-                    ||this.finaldata.charAt(0)=='J' || this.finaldata.charAt(0)=='V'
-                    ||this.finaldata.charAt(0)=='K' || this.finaldata.charAt(0)=='W'
-                    ||this.finaldata.charAt(0)=='L' || this.finaldata.charAt(0)=='X'
-                    ||this.finaldata.charAt(0)=='M' || this.finaldata.charAt(0)=='Y'
-                    ||this.finaldata.charAt(0)=='N' || this.finaldata.charAt(0)=='Z')
+            String str2=" of ";
+
+            for (i = 1, e = 1, d = 1; i < this.finaldata.length(); i++) {
+                char ch = this.finaldata.charAt(i);
+                if (ch == ' ') {
+                    e++;
+                }
+            }
+            if (finaldata.toLowerCase().contains(str2.toLowerCase()))
             {
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ans_2.equalsIgnoreCase(""))
-                        {
-                            speakques(2);
-                        }
-                    }
-                }, 2000);
-
+                    parts = finaldata.split(" of ", e);
+                    str_date_day = parts[0];
+                    str_date_month = parts[1];
+                    date_day_check();
             }
             else
             {
-                ans_3=finaldata;
-                speakques(status_code);
-                date_day_check();
+                if (e==2) {
+
+                    parts = finaldata.split(" ", e);
+                    str_date_day = parts[0];
+                    str_date_month = parts[1];
+                    date_day_check();
+                }
             }
+
         }
 
         // Time 6 a.m.
         if (status_code == 4) {
-            if (this.finaldata.charAt(0)>=1 || this.finaldata.charAt(0)<=9)
-            {
-                for (i = 1, c = 1, d = 1; i < this.finaldata.length(); i++) {
-                    char ch = this.finaldata.charAt(i);
-                    if ((ch == ' ' && this.finaldata.charAt(i + 1) == 'a') || (ch == ' ' && this.finaldata.charAt(i + 1) == 'p')) {
-                        c++;
+
+
+            String str_am="a.m.";
+            String str_pm="p.m.";
+            if (finaldata.toLowerCase().contains(str_am.toLowerCase())
+                ||finaldata.toLowerCase().contains(str_pm.toLowerCase()) ) {
+
+                if (this.finaldata.charAt(0) >= 1 || this.finaldata.charAt(0) <= 9) {
+                    for (i = 1, c = 1, d = 1; i < this.finaldata.length(); i++) {
+                        char ch = this.finaldata.charAt(i);
+                        if ((ch == ' ' && this.finaldata.charAt(i + 1) == 'a') || (ch == ' ' && this.finaldata.charAt(i + 1) == 'p')) {
+                            c++;
+                        }
+                        if (ch == ':') {
+                            d++;
+                        }
                     }
-                    if (ch == ':') {
-                        d++;
-                    }
-                }
-                if (d >= 2) {
-                    ans_4=finaldata;
-                    time_hrmin_check();
-                }
-                else
-                {
-                    if (c >= 2) {
-                        ans_4=finaldata;
-                        time_hr_womin_check();
+                    if (d >= 2) {
+                        time_hrmin_check();
+                    } else {
+                        if (c >= 2) {
+                            time_hr_womin_check();
+                        }
                     }
                 }
             }
+
         }
 
     }
@@ -270,19 +260,19 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
 
                 // After SET Meeting
                 ques_2 =engine.speak("On Date", TextToSpeech.QUEUE_FLUSH, null, null);
-                new Handler().postDelayed(new Runnable() {
 
+                new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         aiButton.startListening();
                     }
                 }, 2000);
-                new Handler().postDelayed(new Runnable() {
 
+                new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         if (ans_3.equalsIgnoreCase(""))
-                        {speakques(status_code);}
+                        {speakques(status_code); }
                     }
                 }, 7000);
 
@@ -318,36 +308,10 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
 
     }
 
-
     @SuppressLint("NewApi")
     public void date_day_check() {
 
-
-
-        String str2=" of ";
-        if (finaldata.toLowerCase().contains(str2.toLowerCase()))
-        {
-            parts = finaldata.split(" of ", c);
-            str_date_day = parts[0];
-            if (c>=2)
-            {
-                str_date_month = parts[1];
-            }
-
-        }
-        else
-        {
-            parts = finaldata.split(" ", c);
-            str_date_day = parts[0];
-            if (c>=2)
-            {
-                str_date_month = parts[1];
-            }
-
-        }
-
-        if (str_date_day.length() <= 2) {
-            switch (str_date_day) {
+        switch (str_date_day) {
                 case "1":
                     num_day = 1;
                     date_month_check();
@@ -472,16 +436,6 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
                     num_day = 31;
                     date_month_check();
                     break;
-                default:
-                    num_day=localCalendar.get(Calendar.DAY_OF_MONTH);
-                    date_month_check();
-                    break;
-
-
-            }
-        } else {
-            if (str_date_day.length() > 2) {
-                switch (str_date_day) {
                     case "one":
                         num_day = 1;
                         date_month_check();
@@ -730,16 +684,11 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
                         num_day = 29;
                         date_month_check();
                         break;
-
                     default:
-                        num_day=localCalendar.get(Calendar.DAY_OF_MONTH);
-                        date_month_check();
-                        break;
+                        ans_3="";
 
                 }
             }
-        }
-    }
 
     @SuppressLint("NewApi")
     public void date_month_check() {
@@ -747,47 +696,76 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
         switch (str_date_month) {
             case "January":
                 num_month = 0;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             case "February":
                 num_month = 1;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             case "March":
                 num_month = 2;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             case "April":
                 num_month = 3;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             case "May":
                 num_month = 4;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             case "June":
                 num_month = 5;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             case "July":
                 num_month = 6;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             case "August":
                 num_month = 7;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             case "September":
                 num_month = 8;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             case "October":
                 num_month = 9;
+                ans_3 = finaldata;
+                speakques(status_code);
+                break;
             case "Oktober":
                 num_month = 9;
+                ans_3 = finaldata;
+                speakques(status_code);
+                break;
             case "oktober":
                 num_month = 9;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             case "November":
                 num_month = 10;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             case "December":
                 num_month = 11;
+                ans_3 = finaldata;
+                speakques(status_code);
                 break;
             default:
-                num_month= localCalendar.get(Calendar.MONTH) + 1;
-                break;
+                ans_3="";
 
         }
     }
@@ -873,10 +851,8 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
                     num_hr = 12;
                     time_min_check();
                     break;
-
                 default:
-                    num_hr=localCalendar.get(Calendar.HOUR_OF_DAY);
-                    time_min_check();
+                    ans_4="";
                     break;
             }
         }
@@ -1126,8 +1102,7 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
                 break;
 
             default:
-                num_min=0;
-                time_ampm_check();
+                ans_4="";
                 break;
         }
     }
@@ -1196,7 +1171,7 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
                     break;
 
                 default:
-                    num_hr=localCalendar.get(Calendar.HOUR_OF_DAY);
+                    ans_4 = "";
                     break;
             }
         }
@@ -1209,17 +1184,19 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
 
         switch (str_time_ampm) {
             case "a.m.":
+                ans_4 = finaldata;
                 engine.speak("Thank You", TextToSpeech.QUEUE_FLUSH, null, null);
                 Log.d("Timingssss : ", str_time_hr + ":" + " " + str_time_ampm);
                 addReminderInCalendar();
                 break;
             case "p.m.":
+                ans_4 = finaldata;
                 engine.speak("Thank You" , TextToSpeech.QUEUE_FLUSH, null, null);
                 Log.d("Timingssss : ", str_time_hr + ":" + " " + str_time_ampm);
                 addReminderInCalendar();
                 break;
             default:
-                engine.speak("Error", TextToSpeech.QUEUE_FLUSH, null, null);
+                ans_4 ="";
                 break;
         }
 
@@ -1272,6 +1249,7 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
+
         Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
         String eventID = uri.getLastPathSegment();
 
@@ -1285,7 +1263,9 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
         };
 
         Cursor calendarCursor = managedQuery(uri, projection, null, null, null);
-
+        Intent i=new Intent(MicActivity.this,MicActivity.class);
+        startActivity(i);
+        finishAffinity();
 //        Intent intent = new Intent(Intent.ACTION_INSERT)
 //                .setType("vnd.android.cursor.item/event")
 //                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
@@ -1320,20 +1300,6 @@ public class MicActivity extends AppCompatActivity implements TextToSpeech.OnIni
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public void CalenderPermission() {
-
-        if (ContextCompat.checkSelfPermission(MicActivity.this,
-                Manifest.permission.READ_CALENDAR)
-                != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(MicActivity.this,
-                        Manifest.permission.WRITE_CALENDAR)
-                        != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MicActivity.this,
-                    new String[]{Manifest.permission.READ_CALENDAR,
-                            Manifest.permission.WRITE_CALENDAR},
-                    100);
-        }
-    }
 
     @Override
     public void onBackPressed() {
